@@ -61,7 +61,7 @@ const observe = [
 for (run = 0; run < nbRun; run++) {
 	stepCounter=1
 
-  	console.log("======  RUN: " +run +"   ======================================================")
+  	console.log("======  RUN n° " +run +"   ======================================================")
 
 
 	// browser instance creation

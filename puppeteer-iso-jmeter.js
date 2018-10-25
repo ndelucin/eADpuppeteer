@@ -117,18 +117,23 @@ try{
 	await page.waitFor(2000)
 
 		// configure IC60N + Add x10
+		try{
 		await psui_configureProductIC60N(page)
 		await psui_addToBom(page, 10)
 		await page.waitFor(2000)
-
+		}
+		catch (error) {}
+	
 		await psui_backToHierarchyTopLevel(page)
 		await page.waitFor(2500)
 
 		// configure MTZ + Add x1
+		try{
 		await psui_configureProductMTZ1(page)
 		await psui_addToBom(page, 1)
 		await page.waitFor(2000)
-
+		}
+		catch (error) {}
 
 	//===============================================================
 	// open SWITCHBOARD EDITOR

@@ -542,6 +542,36 @@ async function proj_openProject(page) {
 
 
 //================================================================================================
+async function proj_createProject(page, projName, projDescription, projClient) {
+	
+	await console.log(" > click on [NEW PROJECT] button")
+	await page.waitForSelector('.se-blm-create-btn')
+  	await page.click('.se-blm-create-btn')
+
+	await page.waitForSelector('#projName')
+	await console.log(" > set project name, description, client fields")
+	
+	await page.type("#projName", projName + Date.now())
+	await page.waitFor(1000)
+
+  	await page.type("#projDesc", projDescription)
+  	await page.waitFor(1000)
+ 
+	await page.type("#projClient", projClient)  
+	await page.waitFor(1000)
+
+	await console.log(" > click on [CREATE PROJECT] button")
+	await getTimestamp()
+	await page.click('#createOrSaveBtn')
+		
+	await page.waitForSelector("#swbTitleInput") // more relevant than #add-new-swb-icon
+	await console.log(getElapsedTime(page, true, "Time to create & open a new project"))	
+}
+
+
+
+
+//================================================================================================
 async function proj_duplicateProject(page, projectName) {
 	// ASSUMPTION : project to be duplicated has been searched before /!\ 
 	

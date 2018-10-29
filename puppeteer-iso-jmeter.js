@@ -27,26 +27,29 @@ const observe = [
 (async () => {
 
 	//****************************************************************************************
-		nbRun=40
+		nbRun=1
 		run=0
 
 		//eadUrl="https://ecorealad-sqe.schneider-electric.com/#/projects"
 		//eadUrl="https://ecorealad-int.schneider-electric.com/#/projects"
-		eadUrl="https://ecorealad-ppr-emea.schneider-electric.com/#/projects"
+		//eadUrl="https://ecorealad-ppr-emea.schneider-electric.com/#/projects"
+		eadUrl="https://ecorealad-dev.schneider-electric.com/#/projects"
+
 	
 		//var env = process.argv[2]; //value will be "node"
 		//defineTestingParams(env)
 	
-		usrLogin="perfuser01@yopmail.com"
+		usrLogin="perfuser02@yopmail.com"
 		usrPassword="perfuser01"
 		previousTimestamp = 0
 		duplicatedProject=""
-		targetProject="refPrj_PUPPETEER" 	// "L REF" "PUPPETEER_EMPTY"
+		targetProject="refPrj_PUPPETEER_DEV" 	// "L REF" "PUPPETEER_EMPTY"
 		logFile="puppeteer.log"
 		resultFile="results.log"
 		harFile="puppeteer.har"
 		screenshotPath="./screenshots/"
 		stepCounter=1;
+		globalTimeout=60000
 		globalTimeout=60000
 
 		resultsTab = [];
@@ -61,15 +64,16 @@ const observe = [
 for (run = 0; run < nbRun; run++) {
 	stepCounter=1
 
-  	console.log("======  RUN n° " +run +"   ======================================================")
+  	console.log("\n\n======  RUN n° " +run +"   ======================================================")
 
 
 	// browser instance creation
 	const browser = await puppeteer.launch(
 		{ 
-			headless: true, 
+			headless: false, 
 			//slowMo: 500,
 			//devtools: true,
+			ignoreHTTPSErrors: true
 		}
 	);
 	const page = await browser.newPage();
@@ -92,8 +96,12 @@ try{
 	//===============================================================
 	// eAD landing page + user login
 	await logon(page, eadUrl, usrLogin, usrPassword)
-	await page.waitFor(2000)
+	await page.waitFor(1500)
 
+
+	await proj_createProject(page, "un joli projet", "une belle description", "bogoss38")
+
+/*
 	//  search for targetProject
 	await proj_searchForProject(page, targetProject)
 	await page.waitFor(1000)
@@ -153,7 +161,7 @@ try{
 	// open SWITCHBOARD BOM
 	await nav_gotoTabSwitchboardBom(page)
 	await page.waitFor(2000)
-/*
+
 		// duplicate product
 		await bom_duplicateProduct(page)
 		await page.waitFor(2000)
@@ -166,7 +174,7 @@ try{
 		await bom_reconfigureProduct(page)
 		await page.waitFor(2000)
 
-*/
+
 	//===============================================================		
 	// open PROJECT QUOTE
 	await nav_gotoTabProjectQuote(page) 
@@ -185,7 +193,7 @@ try{
 		// automatic solution
 		// await swbEditor_automaticSolution(page)
 		// await page.waitFor(3000)
-/*
+
 	//===============================================================
 	// open SWITCHBOARDS
 	await nav_gotoTabSwitchboards(page) 
@@ -203,7 +211,7 @@ try{
 		await swbs_addSwb(page)
 		await page.waitFor(2000)
 
-*/
+
 	//===============================================================
 	// save project
 	await proj_saveProject(page)
@@ -215,9 +223,10 @@ try{
 	await nav_gotoTabProjects(page)
 	await page.waitFor(2000)
 
-
+*/
 	//===============================================================
 	// END OF SCENARIO
+	await page.waitFor(500)
 	await browser.close()
 
 }
@@ -256,7 +265,7 @@ logMsg(resultFile, resultString)
 async function getElapsedTime(page, doScreenShot, msg) {
 	var millis = Date.now() - previousTimestamp;
 
-	console.log(" > TIME: " + msg + " => " + millis/1000);
+	console.log(" ==> TIME: " + msg + " => " + millis/1000);
 	logMsg(logFile, " > " +msg + " : " + millis/1000)
 
 	// take a screenshot if required
@@ -495,18 +504,20 @@ async function logon(page, url, username, password) {
 	// 3 : manage "unsaved change popup"
 	try {
 		// new version
-		/*
+		
 		await page.waitForSelector('#se-dialog', {timeout: 5000})
    		await console.log(" > Unsaved change popup window detected => click on [DONT SAVE]")
 		await page.waitFor(500)
   		await page.click('#se-dialog-btn2')
-  		*/
+  		
 
   		// PPR
+  		/*
   		await page.waitForSelector('.modal-unsaved > .se-modal-content > .ng-scope > p > .se-btn-white', {timeout: 5000})
   		await console.log(" > Unsaved change popup window detected => click on [DONT SAVE]")
 		await page.waitFor(500)
   		await page.click('.modal-unsaved > .se-modal-content > .ng-scope > p > .se-btn-white')
+  		*/
 
   	} 
 	catch (error) {
